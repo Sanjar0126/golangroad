@@ -9,5 +9,4 @@ type ContactList struct {
 }
 
 func (c ContactList) CreateContactList() {
-
 }
