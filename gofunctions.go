@@ -19,7 +19,7 @@ func fibLoop(n int) int {
 	for k := 0; k < n; k++ {
 		c = j + i
 		i = j
-	    j = c
+		j = c
 	}
 	return c
 }
@@ -64,40 +64,4 @@ func oddevensum(n int) (int, int) {
 		}
 	}
 	return sumodd, sumeven
-}
-
-func duplicateArray(arr []int) []int {
-	length := len(arr)
-	var res []int
-	for i := 0; i < length; i++ {
-		for j := i + 1; j < length; j++ {
-			if arr[i] == arr[j] {
-				res = append(res, arr[i])
-			}
-		}
-	}
-	return res
-}
-
-func main() {
-	fmt.Printf("Fibbonaci: ")
-	fmt.Println(fibRec(10), fibLoop(1000))
-
-	fmt.Print("FizzBuzz-check: ")
-	fmt.Println(fizzbuzz(3), fizzbuzz(5), fizzbuzz(45), fizzbuzz(23))
-
-	fmt.Println("\nPalindrome-check: ")
-	palindrome("madam")
-	palindrome("qwerty")
-	palindrome("SanjarrajnaS")
-	palindrome("asdsdadasd")
-
-	println("\nOdd Even sum: ")
-	fmt.Println(oddevensum(100000))
-
-	fmt.Println("\nDuplicate elements of array: ")
-	arr := []int{1, 5, 3, 5, 3, 1}
-	fmt.Println(duplicateArray(arr))
-
-
 }
