@@ -10,7 +10,6 @@ import (
 )
 
 type ContactList struct {
-	id					 int
 	name, email, address string
 	phoneNumber          int
 	createdAt            time.Time
@@ -21,7 +20,7 @@ type ContactListInterface interface {
 	CreateContactList(conn *pgxpool.Pool)
 	GetContact(conn *pgxpool.Pool, contactId int) pgx.Rows
 	GetContactList(conn *pgxpool.Pool) pgx.Rows
-	UpdateContact(conn *pgxpool.Pool, contactId int)
+	UpdateContact(conn *pgxpool.Pool, contactId int) pgx.Rows
 	DeleteContact(conn *pgxpool.Pool, contactId int)
 	Values() ContactList
 }
@@ -35,6 +34,8 @@ func (c *ContactList) CreateContactList(conn *pgxpool.Pool) {
 		c.name, c.email, c.address, c.phoneNumber, c.createdAt, c.updatedAt)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Query create failed: %v\n", err)
+	} else {
+		fmt.Println("Record created")
 	}
 }
 
@@ -54,13 +55,20 @@ func (c *ContactList) GetContactList(conn *pgxpool.Pool) pgx.Rows {
 	return rows
 }
 
-func (c *ContactList) UpdateContact(conn *pgxpool.Pool, contactId int) {
+func (c *ContactList) UpdateContact(conn *pgxpool.Pool, contactId int) pgx.Rows {
 	_, err := conn.Exec(context.Background(),
 		"update contactlist set name=$2, email=$3, address=$4, phonenumber=$5, updated_at=$6 where id=$1",
 		contactId, c.name, c.email, c.address, c.phoneNumber, c.updatedAt)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Query update failed: %v\n", err)
+	} else {
+		fmt.Println("Record updated")
 	}
+	rows, err := conn.Query(context.Background(), "select * from contactlist where id=$1", contactId)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Query get failed: %v\n", err)
+	}
+	return rows
 }
 
 func (c *ContactList) DeleteContact(conn *pgxpool.Pool, contactId int) {
@@ -68,13 +76,7 @@ func (c *ContactList) DeleteContact(conn *pgxpool.Pool, contactId int) {
 		"delete from contactlist where id=$1", contactId)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Query update failed: %v\n", err)
+	}else {
+		fmt.Println("Record deleted")
 	}
-}
-
-type TaskList struct {
-	contact   ContactList
-	task      string
-	completed bool
-	createdAt time.Time
-	updatedAt time.Time
 }
