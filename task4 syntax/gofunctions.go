@@ -36,7 +36,7 @@ func fizzbuzz(n int) string {
 	}
 }
 
-func palindrome(n string) {
+func palindrome(n string) bool {
 	length := len(n)
 	j := length
 	status := true
@@ -49,8 +49,10 @@ func palindrome(n string) {
 	}
 	if status {
 		fmt.Println("Palindrome")
+		return true
 	} else {
 		fmt.Println("Not palindrome")
+		return false
 	}
 }
 
