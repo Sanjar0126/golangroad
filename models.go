@@ -19,10 +19,15 @@ type ContactList struct {
 
 type ContactListInterface interface {
 	CreateContactList(conn *pgxpool.Pool)
-	GetContact(conn *pgxpool.Pool, contactId int)
+	GetContact(conn *pgxpool.Pool, contactId int) pgx.Rows
 	GetContactList(conn *pgxpool.Pool) pgx.Rows
 	UpdateContact(conn *pgxpool.Pool, contactId int)
 	DeleteContact(conn *pgxpool.Pool, contactId int)
+	Values() ContactList
+}
+
+func (c ContactList) Values() ContactList{
+	return c
 }
 
 func (c *ContactList) CreateContactList(conn *pgxpool.Pool) {
@@ -33,12 +38,12 @@ func (c *ContactList) CreateContactList(conn *pgxpool.Pool) {
 	}
 }
 
-func (c *ContactList) GetContact(conn *pgxpool.Pool, contactId int) {
-	err := conn.QueryRow(context.Background(), "select * from contactlist where id=$1", contactId).
-		Scan(&c.id, &c.name, &c.email, &c.address, &c.phoneNumber, &c.createdAt, &c.updatedAt)
+func (c *ContactList) GetContact(conn *pgxpool.Pool, contactId int) pgx.Rows{
+	rows, err := conn.Query(context.Background(), "select * from contactlist where id=$1", contactId)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Query get failed: %v\n", err)
 	}
+	return rows
 }
 
 func (c *ContactList) GetContactList(conn *pgxpool.Pool) pgx.Rows {
