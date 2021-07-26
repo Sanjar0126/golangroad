@@ -2,9 +2,8 @@ package main
 
 import (
 	"bufio"
-	"context"
 	"fmt"
-	"github.com/jackc/pgx/v4/pgxpool"
+	"github.com/jmoiron/sqlx"
 	"os"
 	"time"
 )
@@ -145,13 +144,13 @@ func main() {
 	}
 }
 
-func connectDB() *pgxpool.Pool {
-	pool, err := pgxpool.Connect(context.Background(), DataBaseURL)
+func connectDB() *sqlx.DB {
+	db, err := sqlx.Connect("postgres", DataBaseURL)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Unable to connect to database: %v\n", err)
 		os.Exit(1)
 	}else{
 		fmt.Println("Connected to database")
 	}
-	return pool
+	return db
 }

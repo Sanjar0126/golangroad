@@ -2,15 +2,15 @@ package main
 
 import (
 	"fmt"
-	"github.com/jackc/pgx/v4/pgxpool"
+	"github.com/jmoiron/sqlx"
 )
 
-func CreateContact(c ContactListInterface, conn *pgxpool.Pool) {
+func CreateContact(c ContactListInterface, conn *sqlx.DB) {
 	c.CreateContactList(conn)
 }
 
 // GetContact - Get contact from db by ID pk
-func GetContact(c ContactListInterface, conn *pgxpool.Pool) {
+func GetContact(c ContactListInterface, conn *sqlx.DB) {
 	values := c.Values()
 	var contactId int
 	_, err := fmt.Scanf("%d", &contactId)
@@ -30,7 +30,7 @@ func GetContact(c ContactListInterface, conn *pgxpool.Pool) {
 	}
 }
 
-func GetContactList(contact ContactListInterface, conn *pgxpool.Pool) {
+func GetContactList(contact ContactListInterface, conn *sqlx.DB) {
 	var contactId int
 	values := contact.Values()
 	contacts := contact.GetContactList(conn)
@@ -45,7 +45,7 @@ func GetContactList(contact ContactListInterface, conn *pgxpool.Pool) {
 	}
 }
 
-func UpdateContact(c ContactListInterface, conn *pgxpool.Pool, contactId int) {
+func UpdateContact(c ContactListInterface, conn *sqlx.DB, contactId int) {
 	values := c.Values()
 	contact := c.UpdateContact(conn, contactId)
 	fmt.Printf("ID\tName\tE-Mail\t\tAddress\t\tPhone Number\tCreated Date\t\t\tUpdated Date\n")
@@ -59,17 +59,17 @@ func UpdateContact(c ContactListInterface, conn *pgxpool.Pool, contactId int) {
 	}
 }
 
-func DeleteContact(c ContactListInterface, conn *pgxpool.Pool, contactId int){
+func DeleteContact(c ContactListInterface, conn *sqlx.DB, contactId int){
 	c.DeleteContact(conn, contactId)
 }
 
 //Task list
 
-func CreateTask(t TaskListInterface, conn *pgxpool.Pool) {
+func CreateTask(t TaskListInterface, conn *sqlx.DB) {
 	t.CreateTaskList(conn)
 }
 
-func GetTask(t TaskListInterface, conn *pgxpool.Pool) {
+func GetTask(t TaskListInterface, conn *sqlx.DB) {
 	values := t.Values()
 	var taskID int
 	_, err := fmt.Scanf("%d", &taskID)
@@ -89,7 +89,7 @@ func GetTask(t TaskListInterface, conn *pgxpool.Pool) {
 	}
 }
 
-func GetTaskList(t TaskListInterface, conn *pgxpool.Pool) {
+func GetTaskList(t TaskListInterface, conn *sqlx.DB) {
 	var taskID int
 	values := t.Values()
 	tasks := t.GetTaskList(conn)
@@ -104,7 +104,7 @@ func GetTaskList(t TaskListInterface, conn *pgxpool.Pool) {
 	}
 }
 
-func UpdateTask(c TaskListInterface, conn *pgxpool.Pool, taskID int) {
+func UpdateTask(c TaskListInterface, conn *sqlx.DB, taskID int) {
 	values := c.Values()
 	task := c.UpdateTask(conn, taskID)
 	fmt.Printf("ID\tTask\t\tCompleted\tContact ID\tCreated Date\t\t\t\tUpdated Date\n")
@@ -118,6 +118,6 @@ func UpdateTask(c TaskListInterface, conn *pgxpool.Pool, taskID int) {
 	}
 }
 
-func DeleteTask(c TaskListInterface, conn *pgxpool.Pool, taskID int){
+func DeleteTask(c TaskListInterface, conn *sqlx.DB, taskID int){
 	c.DeleteTask(conn, taskID)
 }
