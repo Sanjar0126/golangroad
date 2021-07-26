@@ -1,4 +1,4 @@
-package task4_syntax
+package task4
 
 import (
 	"fmt"
