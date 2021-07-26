@@ -46,13 +46,32 @@ func main() {
 			contact.createdAt = time.Now()
 			contact.updatedAt = time.Now()
 
-			CreateContact(&contact, dbConnection)
+			err = CreateContact(&contact, dbConnection)
+			if err != nil {
+				fmt.Fprintf(os.Stderr, "Query create failed: %v\n", err)
+			} else {
+				fmt.Println("Record created")
+			}
 		case 2:
 			contact := ContactList{}
-			GetContactList(&contact, dbConnection)
+			err = GetContactList(&contact, dbConnection)
+			if err != nil {
+				fmt.Fprintf(os.Stderr, "Query get list failed: %v\n", err)
+			}
+
 		case 3:
 			contact := ContactList{}
-			GetContact(&contact, dbConnection)
+			var contactId int
+			_, err := fmt.Scanf("%d", &contactId)
+			if err != nil {
+				fmt.Print(err)
+			}
+			err = GetContact(&contact, dbConnection, contactId)
+			if err != nil {
+				fmt.Fprintf(os.Stderr, "Query get failed: %v\n", err)
+			} else {
+				fmt.Println("Record found")
+			}
 		case 4:
 			contact := ContactList{}
 			var contactId int
@@ -78,7 +97,12 @@ func main() {
 			}
 			contact.updatedAt = time.Now()
 
-			UpdateContact(&contact, dbConnection, contactId)
+			err = UpdateContact(&contact, dbConnection, contactId)
+			if err != nil {
+				fmt.Fprintf(os.Stderr, "Query update failed: %v\n", err)
+			} else {
+				fmt.Println("Record updated")
+			}
 		case 5:
 			contact := ContactList{}
 			var contactId int
@@ -88,8 +112,12 @@ func main() {
 				fmt.Print(err)
 				return
 			}
-
-			DeleteContact(&contact, dbConnection, contactId)
+			err = DeleteContact(&contact, dbConnection, contactId)
+			if err != nil {
+				fmt.Fprintf(os.Stderr, "Query update failed: %v\n", err)
+			}else {
+				fmt.Println("Record deleted")
+			}
 		case 6:
 			task := TaskList{}
 			fmt.Print("Enter Task: ")
@@ -103,13 +131,24 @@ func main() {
 			task.createdAt = time.Now()
 			task.updatedAt = time.Now()
 
-			CreateTask(&task, dbConnection)
+			err = CreateTask(&task, dbConnection)
+			if err != nil {
+				fmt.Fprintf(os.Stderr, "Query create failed: %v\n", err)
+			} else {
+				fmt.Println("Record created")
+			}
 		case 7:
 			task := TaskList{}
-			GetTaskList(&task, dbConnection)
+			err = GetTaskList(&task, dbConnection)
+			if err != nil {
+				fmt.Fprintf(os.Stderr, "Query get list failed: %v\n", err)
+			}
 		case 8:
 			task := TaskList{}
-			GetTask(&task, dbConnection)
+			err = GetTask(&task, dbConnection)
+			if err != nil {
+				fmt.Fprintf(os.Stderr, "Query get failed: %v\n", err)
+			}
 		case 9:
 			task := TaskList{}
 			var taskID int
@@ -128,7 +167,12 @@ func main() {
 			_, _ = fmt.Scanf("%s", &task.contactId)
 			task.updatedAt = time.Now()
 
-			UpdateTask(&task, dbConnection, taskID)
+			err = UpdateTask(&task, dbConnection, taskID)
+			if err != nil {
+				fmt.Fprintf(os.Stderr, "Query update failed: %v\n", err)
+			} else {
+				fmt.Println("Record updated")
+			}
 		case 0:
 			task := TaskList{}
 			var taskID int
@@ -138,7 +182,12 @@ func main() {
 				fmt.Print(err)
 				return
 			}
-			DeleteTask(&task, dbConnection, taskID)
+			err = DeleteTask(&task, dbConnection, taskID)
+			if err != nil {
+				fmt.Fprintf(os.Stderr, "Query update failed: %v\n", err)
+			}else {
+				fmt.Println("Record deleted")
+			}
 		default:
 			os.Exit(2)
 		}

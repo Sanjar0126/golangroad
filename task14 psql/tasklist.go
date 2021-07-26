@@ -2,9 +2,7 @@ package main
 
 import (
 	"database/sql"
-	"fmt"
 	"github.com/jmoiron/sqlx"
-	"os"
 	"time"
 )
 
@@ -17,11 +15,11 @@ type TaskList struct {
 }
 
 type TaskListInterface interface {
-	CreateTaskList(conn *sqlx.DB)
-	GetTask(conn *sqlx.DB, taskID int) *sql.Rows
-	GetTaskList(conn *sqlx.DB) *sql.Rows
-	UpdateTask(conn *sqlx.DB, taskID int) *sql.Rows
-	DeleteTask(conn *sqlx.DB, taskID int)
+	CreateTaskList(conn *sqlx.DB) error
+	GetTask(conn *sqlx.DB, taskID int) (*sql.Rows, error)
+	GetTaskList(conn *sqlx.DB) (*sql.Rows, error)
+	UpdateTask(conn *sqlx.DB, taskID int) (*sql.Rows, error)
+	DeleteTask(conn *sqlx.DB, taskID int) error
 	Values() TaskList
 }
 
@@ -29,54 +27,38 @@ func (c TaskList) Values() TaskList{
 	return c
 }
 
-func (c *TaskList) CreateTaskList(conn *sqlx.DB) {
+func (c *TaskList) CreateTaskList(conn *sqlx.DB) error {
 	_ , err := conn.Exec("insert into tasklist (task, completed, contact_id, createdat, updated_at) VALUES($1, $2, $3, $4, $5)",
 		c.task, c.completed, c.contactId, c.createdAt, c.updatedAt)
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "Query create failed: %v\n", err)
-	} else {
-		fmt.Println("Record created")
-	}
+	return err
 }
 
-func (c *TaskList) GetTask(conn *sqlx.DB, taskID int) *sql.Rows{
+func (c *TaskList) GetTask(conn *sqlx.DB, taskID int) (*sql.Rows, error){
 	rows, err := conn.Query("select * from tasklist where id=$1", taskID)
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "Query get failed: %v\n", err)
-	}
-	return rows
+	return rows, err
 }
 
-func (c *TaskList) GetTaskList(conn *sqlx.DB) *sql.Rows {
+func (c *TaskList) GetTaskList(conn *sqlx.DB) (*sql.Rows, error) {
 	rows, err := conn.Query("select * from tasklist order by id")
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "Query get list failed: %v\n", err)
-	}
-	return rows
+	return rows, err
 }
 
-func (c *TaskList) UpdateTask(conn *sqlx.DB, taskID int) *sql.Rows {
+func (c *TaskList) UpdateTask(conn *sqlx.DB, taskID int) (*sql.Rows, error) {
 	_, err := conn.Exec(
 		"update tasklist set task=$2, updated_at=$3, contact_id=$4 where id=$1",
 		taskID, c.task, c.updatedAt, c.contactId)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Query update failed: %v\n", err)
-	} else {
-		fmt.Println("Record updated")
+		return nil, err
 	}
-	rows, err := conn.Query("select * from tasklist where id=$1", taskID)
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "Query get failed: %v\n", err)
+	rows, err1 := conn.Query("select * from tasklist where id=$1", taskID)
+	if err1 != nil {
+		return nil, err1
 	}
-	return rows
+	return rows, nil
 }
 
-func (c *TaskList) DeleteTask(conn *sqlx.DB, taskID int) {
+func (c *TaskList) DeleteTask(conn *sqlx.DB, taskID int) error {
 	_, err := conn.Exec(
 		"delete from tasklist where id=$1", taskID)
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "Query update failed: %v\n", err)
-	}else {
-		fmt.Println("Record deleted")
-	}
+	return err
 }
