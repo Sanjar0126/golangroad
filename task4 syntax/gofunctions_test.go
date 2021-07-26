@@ -24,13 +24,13 @@ func TestFizzBuzz(t *testing.T){
 	require.Equal(t, result1, "fizzbuzz")
 	require.NotEqual(t, result1, "fizz")
 	require.NotEqual(t, result1, "buzz")
-	require.NotEqual(t, result1, "15")
+	require.NotEqual(t, result1, "45")
 
 	result2 := fizzbuzz(55)
 	require.NotEqual(t, result2, "fizzbuzz")
 	require.NotEqual(t, result2, "fizz")
 	require.Equal(t, result2, "buzz")
-	require.NotEqual(t, result2, "45")
+	require.NotEqual(t, result2, "55")
 
 	result2 = fizzbuzz(81)
 	require.NotEqual(t, result2, "fizzbuzz")
