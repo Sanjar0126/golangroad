@@ -5,7 +5,7 @@ import (
 	"strconv"
 )
 
-func fibRec(n uint64) uint64 {
+func fibRec(n int) int {
 	if n <= 1 {
 		return 1
 	} else {
