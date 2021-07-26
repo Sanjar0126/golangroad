@@ -4,6 +4,10 @@ import (
 	"testing"
 )
 
+func TestConnection(t *testing.T){
+	connectDB()
+}
+
 func TestCreateContact(t *testing.T) {
 	//var testContact = ContactList{
 	//	name:        "Test Username",
