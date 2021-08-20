@@ -1,0 +1,5 @@
+# github.com/jonas-p/go-shp v0.1.1
+## explicit
+github.com/jonas-p/go-shp
+# github.com/paulmach/go.geojson v1.4.0
+## explicit
